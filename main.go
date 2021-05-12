@@ -478,6 +478,92 @@ func insert_USERS(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pruebita)
 }
 
+func Perfil(w http.ResponseWriter, r *http.Request) {
+
+	
+	fmt.Print(r)
+	var pruebita CargaMasiva
+	//var loginprueba login
+	// we will need to extract the `id` of the article we
+	// wish to delete
+	reqBody, _ := ioutil.ReadAll(r.Body)
+
+	//---el body lo vuelvo un struct para acceder a sus atributos
+
+	db, err := sql.Open("godror", "mia1/mia1@localhost:1521/ORCLCDB.localdomain")
+	//Oracle 18c
+	// db, err := sql.Open("godror", "user/password@localhost:1521/ORCL18.localdomain")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer db.Close()
+
+	base = db
+	json.Unmarshal(reqBody, &pruebita)
+	
+	res, err := db.Exec("BEGIN MODELO;end;" )
+
+
+
+	fmt.Print(res)
+	fmt.Print(res)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(pruebita)
+
+}
+
+
+func  Perfiles(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Print(r)
+	var pruebita USUARIO
+	//var loginprueba login
+	// we will need to extract the `id` of the article we
+	// wish to delete
+	reqBody, _ := ioutil.ReadAll(r.Body)
+
+	//---el body lo vuelvo un struct para acceder a sus atributos
+
+	db, err := sql.Open("godror", "mia1/mia1@localhost:1521/ORCLCDB.localdomain")
+	//Oracle 18c
+	// db, err := sql.Open("godror", "user/password@localhost:1521/ORCL18.localdomain")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer db.Close()
+
+
+    fmt.Print("-----"+pruebita.FECHA_REGISTRO)
+
+    fmt.Print("--*-*-*-+"+pruebita.FECHA_NACIMIENTO)
+	base = db
+	json.Unmarshal(reqBody, &pruebita)
+	res, err := db.Exec("BEGIN procedimiento_INSERTUSUARIO(:1, :2, :3,:4,:5,:6,:7);end;", pruebita.USERNAME,pruebita.PASSWORD,pruebita.NOMBRE_USUARIO,pruebita.APELLIDO_USUARIO,pruebita.FECHA_NACIMIENTO,pruebita.FECHA_REGISTRO,pruebita.FOTOPERFIL)
+
+
+	fmt.Print("suuuuuuuuuuuuu")
+	fmt.Print(res)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(pruebita)
+}
 /*
 
 carga masiva deporteeeeeee
@@ -519,7 +605,7 @@ func main() {
 
 	//PETICION PARA CREAR USUARIOS
 		router.HandleFunc("/CrearClientes", insert_Clientes).Methods("POST")
-		router.HandleFunc("/Clientes", insert_Clientes).Methods("GET")
+		router.HandleFunc("/Clientes", Perfil).Methods("GET")
 
 	//peticion para crear deportes
 	router.HandleFunc("/CrearDeportes", CrearDeportes).Methods("POST")
