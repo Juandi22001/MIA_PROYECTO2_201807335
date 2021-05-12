@@ -577,8 +577,39 @@ carga masiva deporteeeeeee
 
 
 ---------------------------------------------------------------------
+	USERNAME string `json:"USERNAME"`
+	PASSWORD string `json:"PASSWORD"`
+	NOMBRE_USUARIO string `json:"NOMBRE_USUARIO"`
+	APELLIDO_USUARIO string `json:"APELLIDO_USUARIO"`
+	FECHA_NACIMIENTO string `json:"FECHA_NACIMIENTO"`
+	FECHA_REGISTRO string `json:"FECHA_REGISTRO"`
+	
+	FOTOPERFIL  string `json:"FOTOPERFIL"`
+	
 
 */
+
+func GetPeople(n int, USERNAME string ) []USUARIO {
+	people := make([]USUARIO, 0)
+
+	db, err := sql.Open("godror", "mia1/mia1@localhost:1521/ORCLCDB.localdomain")
+	if err != nil {
+		fmt.Println(err)
+		
+	}
+
+	defer db.Close()
+	
+	base = db
+	rows, _ := db.Query(`SELECT  USERNAME,NOMBRE_USUARIO,APELLIDO_USUARIO,FECHA_NACIMIENTO,FECHA_REGISTRO	 from USUARIO WHERE USERNAME`+`=`+`'`+USERNAME+`'`, n)
+	for rows.Next() {
+		p := new(USUARIO)
+		rows.Scan(&p.USERNAME, &p.NOMBRE_USUARIO, &p.APELLIDO_USUARIO,&p.APELLIDO_USUARIO)
+		people = append(people, *p)
+	}
+	return people
+}
+
 
 func main() {
 	//Oracle 12c
