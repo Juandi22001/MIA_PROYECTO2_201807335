@@ -20,12 +20,13 @@ CREATE SEQUENCE deporte_pk START WITH 1;
 CREACION DE LA TABLA TEMPORADA
 **/
 CREATE TABLE Temporada (
-    id_Temporada         INT NOT NULL ,
+    id_Temporada         INT ,
    Temporada    VARCHAR2(300),
     ANIO_Temporada    VARCHAR2(300),
     Inicio_Temporada  varchar2(20),
     Fin_Temporada varchar2(20),
     Estado_Temporada VARCHAR(200),
+    Total int 
    
 );
 
@@ -35,15 +36,19 @@ ALTER TABLE Temporada ADD CONSTRAINT temporada_pk PRIMARY KEY ( id_Temporada );
 
 
 
-
 --CREACION DE TABLA JORNADA 
 /**-----------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
 CREATE TABLE Jornada (
-    id_Jornada         INT NOT NULL ,
-    Nombre_Jornada    VARCHAR2(300),
-    Inicio_Jornada  varchar2(30),
-Fin_Jornada varchar2(30),
-TEMPORADA INT NOT NULL
+    id_Jornada         INT  ,
+    Nombre_Jornada    VARCHAR2(100),
+    Inicio_Jornada  varchar2(100),
+Fin_Jornada varchar2(110),
+TEMPORADA INT ,
+Estado varchar2(100)
+
 );
 
 
@@ -63,17 +68,20 @@ ALTER TABLE Jornada
 --CREACION TABLA EVENTOS
 
 CREATE TABLE Eventos (
-    id_evento         INT NOT NULL ,
-    Nombre_Evento   VARCHAR2(300),
+    id_eventos        INT NOT NULL ,
+  
     LOCAL_  VARCHAR2(200),
-    VISITANTE_ VARCHAR2(200),    
-deporte INT NOT NULL,
-ID_TEMPORADA_E INT NOT NULL
+    VISITANTE_ VARCHAR2(200),
+    R_LOCAL INT, R_VISITANTE INT,
+deporte INT ,
+JORNADA INT ,
+
+Evento_Fecha VARCHAR2(200)
 );
 
 
 
-ALTER TABLE Eventos ADD CONSTRAINT evento_pk PRIMARY KEY ( id_evento );
+ALTER TABLE Eventos ADD CONSTRAINT eventoS_pk PRIMARY KEY ( id_eventos );
 
 CREATE SEQUENCE evento_pk START WITH 1;
 
@@ -81,7 +89,6 @@ CREATE SEQUENCE evento_pk START WITH 1;
 ALTER TABLE Eventos
     ADD CONSTRAINT  Jornada_id_pk FOREIGN KEY (JORNADA )
    REFERENCES JORNADA ( id_Jornada );
-   
    
    
 
@@ -93,25 +100,16 @@ ALTER TABLE Eventos
    
    */
 
-   --TABLE RESULT
+   --TABLE  tier
 
-   CREATE TABLE RESULT_ (
-    id_RESULT         INT NOT NULL ,
-   R_LOCAL   INT NOT NULL,
-   R_VISITANTE  INT NOT NULL,
-    EVENTO INT NOT NULL  
-
+ CREATE TABLE tier_ (
+    id_tier         INT NOT NULL ,
+   tier_   varchar2(100),  precio int
 );
 
-ALTER TABLE RESULT_ ADD CONSTRAINT result_pk PRIMARY KEY ( id_RESULT );
-
-CREATE SEQUENCE result_pk START WITH 1;
+ALTER TABLE tier_ ADD CONSTRAINT tierS_pk PRIMARY KEY ( id_tier );
 
 
-ALTER TABLE RESULT_
-    ADD CONSTRAINT  EVENTO_pkr FOREIGN KEY (EVENTO )
-   REFERENCES EVENTOS ( id_evento );
-   
    
 /**
 
@@ -124,10 +122,14 @@ TABLA CLIENTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
 
 
-CREATE TABLE CLIENTE (
-    id_CLIENTE         INT NOT NULL ,
+
+   
+   
+
+CREATE TABLE Usuario (
+    id_Cliente         INT NOT NULL ,
     Nombre_Cliente   VARCHAR2(300),
-    Apellido_Usuario  VARCHAR2(300),
+    Apellido_Cliente  VARCHAR2(300),
     USER_  VARCHAR2(300),
     Correo   VARCHAR2(300),
     NACIMIENTO varchar2(20),
@@ -137,16 +139,11 @@ CREATE TABLE CLIENTE (
        
 );
 
-ALTER TABLE CLIENTE ADD CONSTRAINT cliente_pk PRIMARY KEY ( id_CLIENTE);
-
-CREATE SEQUENCE cliente_pk START WITH 1;
-
-
-
-
-
-
-
+ALTER TABLE USUARIO
+    ADD CONSTRAINT  TIER_pkr FOREIGN KEY (TIER_ID )
+   REFERENCES tier_( id_tier );
+   
+   
    /**
    
 ---------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -180,7 +177,32 @@ ALTER TABLE MEMBRESIA
     ADD CONSTRAINT  MEMBRESIA_idCLIENTE FOREIGN KEY (ID_CLIENTE )
    REFERENCES CLIENTE ( id_CLIENTE );
 
+CREATE TABLE MEMBRESIA (
+ID_MEMBRESIA INT NOT NULL,
 
+ID_Cliente INT ,
+ID_TEMPORADA INT,
+TIER int, punteo int
+)
+
+ALTER TABLE MEMBRESIA ADD CONSTRAINT MEMBRESIA_pk PRIMARY KEY ( ID_MEMBRESIA );
+
+
+alter table membresia add column  tier int;
+
+ALTER TABLE MEMBRESIA 
+    ADD CONSTRAINT  MEMBRESIA_id_TEMPORADA FOREIGN KEY (ID_TEMPORADA )
+   REFERENCES Temporada ( id_Temporada );
+   
+   
+ALTER TABLE Membresia
+    ADD CONSTRAINT clienteo_pk FOREIGN KEY (id_cliente )
+   REFERENCES usuario ( id_cliente );
+   
+   
+ALTER TABLE MEMBRESIA
+    ADD CONSTRAINT  tierss_pk FOREIGN KEY (tier)
+   REFERENCES tier_ ( id_tier );
 
    --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -246,6 +268,29 @@ ALTER TABLE  prediccion
 
 
 
+CREATE TABLE Prediccion(
+    id_Prediccion        INT NOT NULL ,
+    ID_CLIENTE_P INT NOT NULL,
+    FECHA_PREDICCION  varchar2(200),
+    ID_EVENTO INT NOT NULL,
+    P_LOCAL INT NOT NULL,
+    P_VISITANTE INT NOT NULL
+
+);
+
+ALTER TABLE Prediccion ADD CONSTRAINT prediccion_pk PRIMARY KEY ( id_Prediccion);
+ALTER TABLE  prediccion
+    ADD CONSTRAINT EVENTO_pkdesc FOREIGN KEY (ID_EVENTO)
+   REFERENCES EVENTOS(ID_EVENTO);
+   
+   
+CREATE SEQUENCE prediccion_pk START WITH 1;
+
+ALTER TABLE  prediccion
+    ADD CONSTRAINT USER_p FOREIGN KEY (ID_CLIENTE_P)
+   REFERENCES USUARIO(ID_CLIENTE);
+
+   /* SI JALA JAJAJA*/
 
 CREATE TABLE Desc_Prediccion(
     id_DESc_Prediccion        INT NOT NULL ,
@@ -290,37 +335,27 @@ ALTER TABLE  desc_prediccion
 
 
 
- 
-   CREATE TABLE TEMPORAL(
-NOMBRE VARCHAR2(32),
-APELLIDO VARCHAR2(32),
-PASSWORD VARCHAR2 (32),
-USERNAME VARCHAR2 (32),
-TEMPORADA VARCHAR2 (32),
-ANIO_TEMPORADA VARCHAR2(32),
-TIER  VARCHAR2(32),
-JORNADA VARCHAR2(32),
-DEPORTE VARCHAR2(32),
-FECHA VARCHAR2(20),
-E_VISITANTE VARCHAR2(32),
-E_LOCAL VARCHAR2(32),
-P_LOCAL INT NOT NULL,
-P_VISITANTE INT NOT NULL,
-R_VISITANTE INT NOT NULL,
-R_LOCAL INT NOT NULL
+  CREATE TABLE TEMPORAL(
+NOMBRE VARCHAR2(100),
+APELLIDO VARCHAR2(100),
+PASSWORD VARCHAR2 (100),
+USERNAME VARCHAR2 (100),
+TEMPORADA VARCHAR2 (100),
+numero int ,
+ANIO_TEMPORADA int,
+TIER  VARCHAR2(100),
+JORNADA VARCHAR2(100),
+DEPORTE VARCHAR2(100),
+FECHA VARCHAR2(100),
+E_VISITANTE VARCHAR2(100),
+E_LOCAL VARCHAR2(100),
+P_LOCAL INT  ,
+P_VISITANTE INT  ,
+R_VISITANTE INT  ,
+R_LOCAL INT 
 
 
 );
-
-
-/*
-
-tabla temporal se creo estab tabla por todo el archivo yaml que viene en el archivo de entrada
-
-
-
-*/
-
 
 create or replace  PROCEDURE   PROCEDIMIENTO_TEMPORAL  (
 NOMBRE_  in VARCHAR2,
@@ -328,7 +363,8 @@ APELLIDO_  in VARCHAR2,
 PASSWORD_  in VARCHAR2,
 USERNAME_ in VARCHAR2,
 TEMPORADA_ in VARCHAR2,
-ANIO_TEMPORADA in VARCHAR2,
+numero  in int,
+ANIO_TEMPORADA in int,
 TIER in varchar2,
 JORNADA in VARCHAR2,
 DEPORTE in VARCHAR2,
@@ -342,10 +378,9 @@ R_VISITANTE in INT,
 R_LOCAL in INT
 
 
-
 )AS 
 BEGIN
-INSERT INTO TEMPORAL VALUES (NOMBRE_,APELLIDO_,PASSWORD_,USERNAME_,anio_temporada,TEMPORADA_,TIER,JORNADA,DEPORTE
+INSERT INTO TEMPORAL VALUES (NOMBRE_,APELLIDO_,PASSWORD_,USERNAME_,TEMPORADA_,numero,anio_temporada,TIER,JORNADA,DEPORTE
 ,FECHA,E_VISITANTE,E_LOCAL,P_LOCAL,P_VISITANTE,R_VISITANTE,R_LOCAL) ;
 END;
 
@@ -370,14 +405,36 @@ IMAGEN_DEPORTE  in VARCHAR2
 BEGIN
 INSERT INTO DEPORTE (nombre_deporte,color_deporte,imagen_deoirte)  VALUES (NOMBRE_DEPORTE,COLOR_DEPORTE,IMAGEN_DEPORTE) ;
 END;
+/*
+INSERT EN LA TABLA TIER 
+**/
 
-*el insert de la temporada viniendo desde la tabla temporal*/
-INSERT INTO TEMPORADA(TEMPORADA.TEMPORADA,TEMPORADA.ANIO_TEMPORADA})
-SELECT DISTINCT TEMPORAL.TEMPORADA,TEMPORAL.ANIO_TEMPORADA
+/**/R_ ( TIER_,PRECIO) VALUES ('SILVER',450) ;
+INSERT INTO TIER_ ( TIER_,PRECIO) VALUES ('BRONZE',150) 
+INSERT INTO TIER_ ( TIER_,PRECIO) VALUES ('GOLD',900) 
+INSERT INTO TIER_ ( TIER_,PRECIO) VALUES ('VISITANTE',0)
+
+create table equipo (
+id_equipo  int , equipo varchar (100)
+)
+/*  insert equipo  */
+insert  into equipo (equipo) 
+select distinct E_VISITANTE  FROM TEMPORAL, (
+SELECT DISTINCT E_LOCAL FROM TEMPORAL
+
+);
+
+/*el insert de la temporada viniendo desde la tabla temporal*/
+
+INSERT INTO DEPORTE ( nombre_deporte) 
+			
+			select distinct DEPORTE FROM TEMPORAL;
+
+INSERT INTO TEMPORADA(TEMPORADA.TEMPORADA,TEMPORADA.ANIO_TEMPORADA,TEMPORADA.NUMERO)
+SELECT DISTINCT TEMPORAL.TEMPORADA,TEMPORAL.NUMERO,TEMPORAL.ANIO_TEMPORADA
 from TEMPORAL;
 
-DELETE FROM TEMPORADA;
-
+SELECT * FROM TEMPORADA
 
 SELECT TEMPORADA,DEPORTE FROM TEMPORADA WHERE TEMPORADA.DEPORTE=7;
 /*INSERT DE LA  TABLA JORNADA VINIENDO DESDE LA TABLA TEMPORAL*/
@@ -423,9 +480,11 @@ INSERT DE LA TABLA CLIENTE
 
 */
 
- INSERT INTO CLIENTE(  CLIENTE.NOMBRE_CLIENTE, CLIENTE.APELLIDO_USUARIO,CLIENTE.PASSWORD,CLIENTE.USER_)
+
+ INSERT INTO usuario(  USUARIO.NOMBRE_CLIENTE, USUARIO.APELLIDO_CLIENTE,USUARIO.PASSWORD,USUARIO.USER_)
 SELECT DISTINCT TEMPORAL.NOMBRE , TEMPORAL.APELLIDO,TEMPORAL.PASSWORD,TEMPORAL.USERNAME
-FROM  TEMPORAL;
+FROM  TEMPORAL 
+
 
 /* INSERT TABLA MEMBRESUA
 */
@@ -487,3 +546,15 @@ BEGIN
     ELSE IS_ADMIN:=0;
     END IF;
 END LOGIN;
+
+
+delete from temporal;
+delete from deporte;
+delete from cliente;
+delete from prediccion;
+
+delete from temporada;
+delete from jornada;
+delete from eventos;
+delete from result_;
+delete from cliente;
